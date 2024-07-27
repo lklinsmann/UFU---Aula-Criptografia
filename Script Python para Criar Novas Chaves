@@ -1,0 +1,35 @@
+import binascii
+
+# Função para carregar a chave hexadecimal do arquivo
+def load_hex_key(file):
+    with open(file, 'r') as f:
+        return f.read().strip()
+
+# Função para salvar a chave hexadecimal no arquivo
+def save_hex_key(key, file):
+    with open(file, 'w') as f:
+        f.write(key)
+
+# Função para alterar um bit na posição especificada
+def flip_bit(bin_str, bit_pos):
+    return bin_str[:bit_pos] + ('1' if bin_str[bit_pos] == '0' else '0') + bin_str[bit_pos+1:]
+
+# Carregar a chave original
+original_key_hex = load_hex_key('key_original.hex')
+
+# Converter a chave original para binário
+original_key_bin = bin(int(original_key_hex, 16))[2:].zfill(128)
+
+# Criar quatro novas chaves alterando um bit
+modified_keys_bin = [flip_bit(original_key_bin, i) for i in range(4)]
+
+# Converter as novas chaves para hexadecimal
+modified_keys_hex = [hex(int(k, 2))[2:].zfill(32) for k in modified_keys_bin]
+
+# Salvar as novas chaves em arquivos
+for i, key in enumerate(modified_keys_hex):
+    save_hex_key(key, f'key_modified_{i+1}.hex')
+
+# Exibir as novas chaves
+for i, key in enumerate(modified_keys_hex):
+    print(f'key_modified_{i+1}.hex: {key}')
